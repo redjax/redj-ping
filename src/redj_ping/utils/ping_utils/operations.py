@@ -7,25 +7,15 @@ from subprocess import PIPE, CompletedProcess
 
 from .classes import PingResults
 
+from domain.ping import PingTarget
+
 from loguru import logger as log
 
 host_platform = platform.system().lower()
 
 
-def ping_host(
-    host: str = None,
-    ping_count: int = 3,
-    wait_time: int = 1,
-) -> PingResults:
-    """Start a ping on a remote host.
-
-    Args:
-    ----
-        host (str): IP address or URL to ping
-        ping_count (int): Number of pings to run
-        wait_time (int): Time to wait between pings
-    """
-    if not host:
+def ping_host(target: PingTarget = None):
+    if not target.host:
         raise ValueError("Missing host to ping")
 
     ## Convert ping flags for platform
@@ -36,13 +26,13 @@ def ping_host(
     ping_cmd: list = [
         "ping",
         num_param,
-        str(ping_count),
+        str(target.count),
         wait_param,
-        str(wait_time),
-        host,
+        str(target.wait),
+        target.host,
     ]
 
-    log.debug(f"Pinging [{host}]...")
+    log.debug(f"Pinging [{target.host}]...")
 
     ## Run ping command
     proc: CompletedProcess = subprocess.run(
@@ -65,63 +55,41 @@ def ping_host(
 
     if return_code == 0:
         ## Ping success
-        return_obj_dict = {"host": host, "ping_success": True}
+        return_obj_dict = {"host": target.host, "ping_success": True}
         return_obj: PingResults = PingResults(**return_obj_dict)
     else:
         ## Ping fail
-        return_obj_dict = {"host": host, "ping_success": False}
+        return_obj_dict = {"host": target.host, "ping_success": False}
         return_obj: PingResults = PingResults(**return_obj_dict)
 
     return return_obj
 
 
-def _ping(
-    host: str = None,
-    ping_count: int = 3,
-    wait_time: int = 1,
-    retry_on_fail: bool = False,
-    retry_count: int | None = None,
-    retry_timeout: int | None = 5,
-) -> PingResults:
-    """Start a ping on a remote host.
+def _ping(target: PingTarget = None):
+    assert target is not None, "Must pass a PingTarget class instance."
+    assert isinstance(target, PingTarget), "Target must be an instance of PingTarget"
 
-    Args:
-    ----
-        host (str): IP address or URL to ping
-        ping_count (int): Number of pings to run
-        wait_time (int): Time to wait between pings
-        retry_on_fail (bool): Whether or not to retry on unsuccessful ping
-        retry_count (int): Number of times to retry if pings fail
-        retry_timeout (int): Time (in seconds) to wait between each retry.
-    """
-    ## Get ping results
-    _ping: PingResults = ping_host(
-        host=host, ping_count=ping_count, wait_time=wait_time
-    )
+    _ping: PingResults = ping_host(target=target)
 
     ## Check ping success
     if not _ping.ping_success:
-        if retry_on_fail:
-            if retry_timeout is None or 0:
-                retry_timeout = 5
+        if target.retry:
+            if target.retry_timeout is None or 0:
+                target.retry_timeout = 5
 
             ## retry_on_fail = True
-            while retry_count > 0:
+            while target.retry_count > 0:
                 log.warning(
-                    f"Failed pinging {host}. Waiting {retry_timeout} seconds, then retrying {retry_count} more times."
+                    f"Failed pinging {target.host}. Waiting {target.retry_timeout} seconds, then retrying {target.retry_count} more times."
                 )
 
                 ## Retry ping
-                ping_host(
-                    host=host,
-                    ping_count=ping_count,
-                    wait_time=wait_time,
-                )
+                ping_host(target=target)
 
-                retry_count -= 1
+                target.retry_count -= 1
         else:
             ## retry_on_fail = False, return results immediately
-            _ping.retries = retry_count
+            _ping.retries = target.retry_count
 
             log.debug(f"Ping results: {_ping}")
 
