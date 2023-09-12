@@ -1,1 +1,1 @@
-from .schemas import PingTarget
+from .schemas import PingTarget, PingResults
