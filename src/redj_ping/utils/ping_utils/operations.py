@@ -81,6 +81,7 @@ def _ping(
     wait_time: int = 1,
     retry_on_fail: bool = False,
     retry_count: int | None = None,
+    retry_timeout: int | None = 5,
 ) -> PingResults:
     """Start a ping on a remote host.
 
@@ -91,6 +92,7 @@ def _ping(
         wait_time (int): Time to wait between pings
         retry_on_fail (bool): Whether or not to retry on unsuccessful ping
         retry_count (int): Number of times to retry if pings fail
+        retry_timeout (int): Time (in seconds) to wait between each retry.
     """
     ## Get ping results
     _ping: PingResults = ping_host(
@@ -100,10 +102,13 @@ def _ping(
     ## Check ping success
     if not _ping.ping_success:
         if retry_on_fail:
+            if retry_timeout is None or 0:
+                retry_timeout = 5
+
             ## retry_on_fail = True
             while retry_count > 0:
                 log.warning(
-                    f"Failed pinging {host}. Retrying {retry_count} more times."
+                    f"Failed pinging {host}. Waiting {retry_timeout} seconds, then retrying {retry_count} more times."
                 )
 
                 ## Retry ping
