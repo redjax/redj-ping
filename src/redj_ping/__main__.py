@@ -15,21 +15,15 @@ from constants import (
 )
 from loguru import logger as log
 from utils.loguru_utils import init_logger
-from utils.ping_utils import PingResults, _ping
 
-from domain.ping import PingTarget
+# from utils.ping_utils import PingResults, _ping
 
-init_logger
-
-
-def ping(target: PingTarget = None):
-    ping_results: PingResults = _ping(target=target)
-    log.debug(f"Ping results: {ping_results}")
-
-    return ping_results
+from domain.ping import PingTarget, PingResults
 
 
 if __name__ == "__main__":
+    init_logger
+
     tar = PingTarget(
         host=PING_HOST,
         count=PING_COUNT,
@@ -39,4 +33,5 @@ if __name__ == "__main__":
         retry_timeout=PING_RETRY_TIMEOUT,
     )
 
-    results = ping(target=tar)
+    results = tar.ping()
+    log.debug(f"Results: {results}")
