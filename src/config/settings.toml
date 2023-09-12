@@ -10,6 +10,7 @@ ping_count = 3
 ping_wait = 1
 ping_retry = false
 ping_retry_count = 2
+ping_retry_timeout = 5
 
 [dev]
 

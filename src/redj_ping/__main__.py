@@ -10,37 +10,33 @@ from constants import (
     PING_RETRY,
     PING_RETRY_COUNT,
     PING_WAIT,
+    PING_RETRY_TIMEOUT,
     env_string,
 )
 from loguru import logger as log
 from utils.loguru_utils import init_logger
 from utils.ping_utils import PingResults, _ping
 
+from domain.ping import PingTarget
+
 init_logger
 
 
-def ping(
-    host: str = PING_HOST,
-    ping_count: int = PING_COUNT,
-    wait_time: int = PING_WAIT,
-    retry_on_fail: bool = PING_RETRY,
-    retry_count: int = PING_RETRY_COUNT,
-):
-    ping_settings: dict = {
-        "host": host,
-        "ping_count": ping_count,
-        "wait_time": wait_time,
-        "retry_on_fail": retry_on_fail,
-        "retry_count": retry_count,
-    }
-
-    ping_results: PingResults = _ping(**ping_settings)
+def ping(target: PingTarget = None):
+    ping_results: PingResults = _ping(target=target)
     log.debug(f"Ping results: {ping_results}")
 
     return ping_results
 
 
 if __name__ == "__main__":
-    log.info(env_string)
+    tar = PingTarget(
+        host=PING_HOST,
+        count=PING_COUNT,
+        wait=PING_WAIT,
+        retry=PING_RETRY,
+        retry_count=PING_RETRY_COUNT,
+        retry_timeout=PING_RETRY_TIMEOUT,
+    )
 
-    ping()
+    results = ping(target=tar)

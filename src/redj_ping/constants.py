@@ -10,5 +10,6 @@ PING_COUNT: int = settings.PING_COUNT or 3
 PING_WAIT: int = settings.PING_WAIT or 1
 PING_RETRY: bool = settings.PING_RETRY or False
 PING_RETRY_COUNT: int = settings.PING_RETRY_COUNT or 0
+PING_RETRY_TIMEOUT: int = settings.PING_RETRY_TIMEOUT or 5
 
 env_string: str = f"[env:{ENV}|container:{CONTAINER_ENV}]"
