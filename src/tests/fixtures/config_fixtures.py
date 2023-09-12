@@ -1,8 +1,8 @@
-import pytest
-
 ## Import settings for testing
-from dynaconf import settings
+from __future__ import annotations
 
+from dynaconf import settings
+import pytest
 
 @pytest.fixture
 def app_env():
