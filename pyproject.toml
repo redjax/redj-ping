@@ -22,6 +22,7 @@ build-backend = "pdm.backend"
 dev = [
     "black>=23.9.1",
     "ruff>=0.0.288",
+    "pytest>=7.4.2",
 ]
 
 [tool.pdm.scripts]

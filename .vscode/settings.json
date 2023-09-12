@@ -1,5 +1,6 @@
 {
     "python.analysis.extraPaths": [
-        "./src/redj_ping"
+        "./src/redj_ping",
+        "./src/tests"
     ]
 }
