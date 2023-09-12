@@ -14,20 +14,33 @@ from constants import (
 )
 from loguru import logger as log
 from utils.loguru_utils import init_logger
-from utils.ping_utils import PingResults, ping
+from utils.ping_utils import PingResults, _ping
 
 init_logger
+
+
+def ping(
+    host: str = PING_HOST,
+    ping_count: int = PING_COUNT,
+    wait_time: int = PING_WAIT,
+    retry_on_fail: bool = PING_RETRY,
+    retry_count: int = PING_RETRY,
+):
+    ping_settings: dict = {
+        "host": host,
+        "ping_count": ping_count,
+        "wait_time": wait_time,
+        "retry_on_fail": retry_on_fail,
+        "retry_count": retry_count,
+    }
+
+    ping_results: PingResults = _ping(**ping_settings)
+    log.debug(f"Ping results: {ping_results}")
+
+    return ping_results
+
 
 if __name__ == "__main__":
     log.info(env_string)
 
-    ping_settings: dict = {
-        "host": PING_HOST,
-        "ping_count": PING_COUNT,
-        "wait_time": PING_WAIT,
-        "retry_on_fail": PING_RETRY,
-        "retry_count": PING_RETRY_COUNT,
-    }
-
-    _ping: PingResults = ping(**ping_settings)
-    log.debug(f"Ping results: {_ping}")
+    ping()

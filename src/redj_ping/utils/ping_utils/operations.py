@@ -75,7 +75,7 @@ def ping_host(
     return return_obj
 
 
-def ping(
+def _ping(
     host: str = None,
     ping_count: int = 3,
     wait_time: int = 1,
