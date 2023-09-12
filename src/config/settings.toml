@@ -1,0 +1,19 @@
+[default]
+
+env = "prod"
+container_env = false
+
+log_level = "INFO"
+
+ping_host = "www.google.com"
+ping_count = 3
+ping_wait = 1
+ping_retry = false
+ping_retry_count = 2
+
+[dev]
+
+env = "dev"
+log_level = "DEBUG"
+
+[prod]
