@@ -24,7 +24,7 @@ def ping(
     ping_count: int = PING_COUNT,
     wait_time: int = PING_WAIT,
     retry_on_fail: bool = PING_RETRY,
-    retry_count: int = PING_RETRY,
+    retry_count: int = PING_RETRY_COUNT,
 ):
     ping_settings: dict = {
         "host": host,
