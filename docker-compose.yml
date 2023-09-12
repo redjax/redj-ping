@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+
+  ping:
+    container_name: redj-ping
+    restart: unless-stopped
+    build:
+      context: src
+      dockerfile: Dockerfile
+    working_dir: /app
+    command: python -m redj_ping
+    environment:
+      DYNACONF_ENV: ${ENV:-prod}
+      DYNACONF_CONTAINER_ENV: True
+      DYNACONF_PING_HOST: ${HOST:-www.google.com}
+      DYNACONF_PING_COUNT: ${COUNT:-3}
+      DYNACONF_PING_WAIT: ${WAIT:-1}
+      DYNACONF_PING_RETRY: ${RETRY:-false}
+      DYNACONF_RETRY_COUNT: ${RETRY_COUNT:-2}
