@@ -1,5 +1,6 @@
-import pytest
+from __future__ import annotations
 
+import pytest
 
 @pytest.mark.config
 def test_app_env(app_env):

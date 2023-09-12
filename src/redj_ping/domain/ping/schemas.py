@@ -1,7 +1,9 @@
-from dataclasses import dataclass, field
+from __future__ import annotations
 
+from dataclasses import dataclass, field
 import platform
 import subprocess
+
 from subprocess import PIPE, CompletedProcess
 
 from loguru import logger as log

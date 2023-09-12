@@ -1,1 +1,3 @@
-from .schemas import PingTarget, PingResults
+from __future__ import annotations
+
+from .schemas import PingResults, PingTarget
